@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.nosqlbench</groupId>
+		<artifactId>mvn-defaults</artifactId>
+		<version>4.17.15-SNAPSHOT</version>
+		<relativePath>../mvn-defaults</relativePath>
+	</parent>
+
+	<artifactId>adapter-keyspaces</artifactId>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+
+	<description>
+        A DriverAdapter driver for Amazon Keyspaces (for Apache Cassandra)
+    </description>
+
+	<properties>
+		<aws.java.sdk.version>2.17.197</aws.java.sdk.version>
+	</properties>
+
+	<!-- <dependencyManagement>
+	  <dependencies>
+	    <dependency>
+	      <groupId>software.amazon.awssdk</groupId> 
+		  <artifactId>bom</artifactId>
+		  <version>${aws.java.sdk.version}</version>
+		  <type>pom</type> 
+		  <scope>import</scope>
+		</dependency>
+	  </dependencies>
+	</dependencyManagement> -->
+
+	<dependencies>
+
+		<!-- core dependencies -->
+
+		<dependency>
+			<groupId>io.nosqlbench</groupId>
+			<artifactId>adapters-api</artifactId>
+			<version>4.17.15-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>keyspaces</artifactId>
+			<version>${aws.java.sdk.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-keyspaces -->
+		<!-- <dependency> 
+		  <groupId>com.amazonaws</groupId>
+		  <artifactId>aws-java-sdk-keyspaces</artifactId> 
+		  <version>1.12.221</version>
+		</dependency> -->
+
+	</dependencies>
+
+</project>

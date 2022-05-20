@@ -58,6 +58,7 @@
         <!-- driver modules -->
         <module>adapter-cqld4</module>
         <module>adapter-dynamodb</module>
+        <module>adapter-keyspaces</module>
         <module>driver-diag</module>
         <module>driver-stdout</module>
         <module>driver-tcp</module>
@@ -133,6 +134,12 @@
         <developer>
             <name>Sebastián Estévez</name>
             <email>estevezsebastian@gmail.com</email>
+            <organization>nosqlbench.io</organization>
+            <organizationUrl>http://nosqlbench.io/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Madhavan Sridharan</name>
+            <email>madhavan_5k@yahoo.com</email>
             <organization>nosqlbench.io</organization>
             <organizationUrl>http://nosqlbench.io/</organizationUrl>
         </developer>
