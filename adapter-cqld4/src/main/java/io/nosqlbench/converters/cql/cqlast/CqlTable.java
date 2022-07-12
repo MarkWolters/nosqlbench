@@ -17,7 +17,9 @@
 package io.nosqlbench.converters.cql.cqlast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CqlTable {
@@ -25,6 +27,9 @@ public class CqlTable {
     String keyspace = "";
     List<CqlColumnDef> coldefs = new ArrayList();
     String refddl;
+
+    Map<String,String> tableAttributes = new HashMap<String,String>();
+
 
     public CqlTable() {
     }
@@ -77,5 +82,13 @@ public class CqlTable {
 
     public String getKeySpace() {
         return this.keyspace;
+    }
+
+    public Map<String, String> getTableAttributes() {
+        return tableAttributes;
+    }
+
+    public void setTableAttributes(Map<String, String> tableAttributes) {
+        this.tableAttributes = tableAttributes;
     }
 }

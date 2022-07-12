@@ -18,10 +18,7 @@ package io.nosqlbench.converters.cql.exporters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.nosqlbench.converters.cql.cqlast.CqlColumnDef;
-import io.nosqlbench.converters.cql.cqlast.CqlKeyspace;
-import io.nosqlbench.converters.cql.cqlast.CqlModel;
-import io.nosqlbench.converters.cql.cqlast.CqlTable;
+import io.nosqlbench.converters.cql.cqlast.*;
 import io.nosqlbench.converters.cql.parser.CqlModelParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,7 +91,24 @@ public class CqlWorkloadExporter {
             throw new RuntimeException("Target file '" + target + "' exists. Please remove it first or use a different target file name.");
         }
 
+        CqlSchemaStats schemaStats = null;
+        if (args.length == 3) {
+            Path statspath = Path.of(args[2]);
+            try {
+                CqlSchemaStatsParser parser = new CqlSchemaStatsParser();
+                schemaStats = parser.parse(statspath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+
         CqlWorkloadExporter exporter = new CqlWorkloadExporter(srcpath);
+
+        if (schemaStats != null) {
+            exporter.enhanceWorkload(schemaStats);
+        }
+
         String workload = exporter.getWorkloadAsYaml();
         try {
             Files.write(
@@ -104,6 +118,23 @@ public class CqlWorkloadExporter {
             );
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    //TODO: rewrite this in something resembling an efficient way
+    private void enhanceWorkload(CqlSchemaStats schemaStats) {
+        CqlKeyspaceStats ksStats = null;
+        for (String ksName : model.getKeyspaces().keySet()) {
+            if ((ksStats = schemaStats.getKeyspace(ksName)) != null) {
+                model.getKeyspaces().get(ksName).setKeyspaceAttributes(ksStats.getKeyspaceAttributes());
+                Map<String,CqlTable> ksTables = model.getTablesByKeyspace().get(ksName);
+                for (String tableName : ksTables.keySet()) {
+                    if (ksStats.getKeyspaceTable(tableName) != null) {
+                        model.getTablesByKeyspace().get(ksName).get(tableName)
+                            .setTableAttributes(ksStats.getKeyspaceTable(tableName).getAttributes());
+                    }
+                }
+            }
         }
     }
 

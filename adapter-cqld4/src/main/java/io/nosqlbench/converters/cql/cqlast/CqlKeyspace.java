@@ -16,9 +16,15 @@
 
 package io.nosqlbench.converters.cql.cqlast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CqlKeyspace {
     String keyspaceName= "";
     String refddl;
+
+    Map<String,String> keyspaceAttributes = new HashMap<String,String>();
+
 
     public CqlKeyspace() {
     }
@@ -45,5 +51,13 @@ public class CqlKeyspace {
 
     public String getRefddl() {
         return refddl;
+    }
+
+    public Map<String, String> getKeyspaceAttributes() {
+        return keyspaceAttributes;
+    }
+
+    public void setKeyspaceAttributes(Map<String, String> keyspaceAttributes) {
+        this.keyspaceAttributes = keyspaceAttributes;
     }
 }
