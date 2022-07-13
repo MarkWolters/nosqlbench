@@ -21,6 +21,7 @@ public class CqlSchemaStatsParser {
         BufferedReader reader = Files.newBufferedReader(statspath);
         String currentLine = reader.readLine(); //ignore 1st line
         while((currentLine = reader.readLine()) != null) {
+            currentLine = currentLine.replaceAll("\t","");
             if (!evalForKeyspace(currentLine)) {
                 if (!evalForTable(currentLine)) {
                     String[] splitLine = currentLine.split(":");

@@ -29,6 +29,10 @@ public class CqlColumnDef {
         return name;
     }
 
+    public void setName(String columnName) {
+        this.name = columnName;
+    }
+
     public String getType() {
         return type;
     }

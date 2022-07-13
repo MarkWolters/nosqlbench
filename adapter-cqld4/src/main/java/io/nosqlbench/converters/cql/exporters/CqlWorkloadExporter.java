@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// TODO: Refactor command line argument processing
+//import org.apache.commons.cli.*;
 /**
  * The unit of generation is simply everything that is provided to the exporter together.
  * Thus if you feed it one create statement at a time, it will yield a workload with just that,
@@ -69,6 +71,7 @@ public class CqlWorkloadExporter {
 
 
     public static void main(String[] args) {
+
         if (args.length == 0) {
             throw new RuntimeException("Usage example: PROG filepath.cql filepath.yaml");
         }
@@ -81,7 +84,7 @@ public class CqlWorkloadExporter {
         }
 
         Path target = Path.of(srcpath.toString().replace("\\.cql", "\\.yaml"));
-        if (args.length == 2) {
+        if (args.length >= 2) {
             target = Path.of(args[1]);
         }
         if (!target.toString().endsWith(".yaml")) {
@@ -92,7 +95,7 @@ public class CqlWorkloadExporter {
         }
 
         CqlSchemaStats schemaStats = null;
-        if (args.length == 3) {
+        if (args.length >= 3) {
             Path statspath = Path.of(args[2]);
             try {
                 CqlSchemaStatsParser parser = new CqlSchemaStatsParser();
@@ -103,12 +106,20 @@ public class CqlWorkloadExporter {
             }
         }
 
+        boolean obfuscate = false;
+        if (args.length == 4) {
+            if (args[3].equalsIgnoreCase("obfuscate")) obfuscate = true;
+        }
+
         CqlWorkloadExporter exporter = new CqlWorkloadExporter(srcpath);
 
         if (schemaStats != null) {
             exporter.enhanceWorkload(schemaStats);
         }
 
+        if(obfuscate) {
+            exporter.obfuscateWorkload();
+        }
         String workload = exporter.getWorkloadAsYaml();
         try {
             Files.write(
@@ -118,6 +129,21 @@ public class CqlWorkloadExporter {
             );
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void obfuscateWorkload() {
+        for (CqlTable table : model.getAllTables()) {
+            String ksOrig = table.getTableName();
+            String ksObf = String.valueOf(table.getTableName().hashCode());
+            table.setName(ksObf);
+            table.setRefDdl(table.getRefddl().replaceAll(ksOrig, ksObf));
+            for(CqlColumnDef column : table.getColumnDefinitions()) {
+                String original = column.getName();
+                String obfuscated = String.valueOf(original.hashCode());
+                column.setName(obfuscated);
+                table.setRefDdl(table.getRefddl().replaceAll(original, obfuscated));
+            }
         }
     }
 
